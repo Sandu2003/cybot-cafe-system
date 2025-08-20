@@ -1,0 +1,104 @@
+/* ===== General Page Styling ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+/* ===== Navbar ===== */
+nav {
+    width: 100%;
+    background-color: #3e2723;
+    padding: 15px 25px;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo {
+    font-size: 24px;
+}
+
+/* ===== Login Container ===== */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 60px auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+/* ===== Heading ===== */
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #3e2723; /* Dark café brown */
+    font-size: 24px;
+}
+
+/* ===== Input Fields ===== */
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: border 0.2s;
+}
+
+.login-container input:focus {
+    border: 1px solid #6d4c41; /* Light brown highlight */
+    outline: none;
+}
+
+/* ===== Submit Button ===== */
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #6d4c41; /* Café brown */
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.login-container button:hover {
+    background-color: #4e342e; /* Darker hover */
+}
+
+/* ===== Links (Register link under form) ===== */
+.login-container p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.login-container a {
+    color: #3e2723;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.login-container a:hover {
+    color: #ffcc80; /* Golden hover like menu nav */
+}
+
+/* ===== Error Message ===== */
+.error {
+    color: rgb(153, 46, 46);
+    margin-bottom: 15px;
+    text-align: center;
+}

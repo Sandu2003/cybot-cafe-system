@@ -1,61 +1,63 @@
 <?php
 session_start();
-include '../admin/db.php'; // Your database connection
+include '../admin/db.php';
 
-// Only process login if form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$redirect = $_GET['redirect'] ?? 'menu.php';
+$orderFlag = isset($_GET['order']) ? 1 : 0;
 
-    // Use isset() to avoid undefined index warnings
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
-        $error = "Please enter both email and password!";
+    if(empty($email) || empty($password)){
+        $error = "Please enter both email and password.";
     } else {
-        // Check credentials in database
-        $stmt = $conn->prepare("SELECT id, name, password FROM customers WHERE email=?");
-        $stmt->bind_param("s", $email);
+        $stmt = $conn->prepare("SELECT * FROM customers WHERE email=?");
+        $stmt->bind_param("s",$email);
         $stmt->execute();
-        $stmt->store_result();
+        $result = $stmt->get_result();
 
-        if ($stmt->num_rows > 0) {
-            $stmt->bind_result($id, $name, $hashedPassword);
-            $stmt->fetch();
-
-            if (password_verify($password, $hashedPassword)) {
-                // Successful login
-                $_SESSION['customer_id'] = $id;
-                $_SESSION['customer_name'] = $name;
-
-                // Redirect back to menu page with a success message
-                header("Location: menu.php?login=success");
-                exit();
+        if($result->num_rows==1){
+            $row = $result->fetch_assoc();
+            if(password_verify($password,$row['password'])){
+                $_SESSION['customer_id']=$row['id'];
+                $_SESSION['customer_name']=$row['name'];
+                $_SESSION['login_message']="✅ Successfully logged in!";
+                if($orderFlag) $_SESSION['order_message']="✅ Order added successfully!";
+                header("Location:$redirect");
+                exit;
             } else {
-                $error = "Incorrect password!";
+                $error="Invalid password!";
             }
         } else {
-            $error = "No account found with this email!";
+            $error="No account found with this email!";
         }
-
         $stmt->close();
     }
 }
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Customer Login</title>
+<title>Customer Login</title>
+<link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <h1>Login</h1>
-    <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
-    <form method="post" action="login.php">
-        <input type="email" name="email" placeholder="Email" required><br><br>
-        <input type="password" name="password" placeholder="Password" required><br><br>
-        <button type="submit">Login</button>
-    </form>
+<nav>
+    <div class="navbar-logo">☕ Cybot Cafe</div>
+</nav>
+<div class="login-container">
+<h2>Customer Login</h2>
+<?php if(isset($error)) echo "<div class='error'>$error</div>"; ?>
+<form method="POST" action="">
+<label>Email</label>
+<input type="text" name="email" required>
+<label>Password</label>
+<input type="password" name="password" required>
+<button type="submit">Login</button>
+</form>
+<p>Don’t have an account? <a href="register.php">Register</a></p>
+</div>
 </body>
 </html>

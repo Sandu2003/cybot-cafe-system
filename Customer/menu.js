@@ -1,6 +1,20 @@
 let cart = [];
 
-// Add item to cart
+// Load cart from sessionStorage on page load
+window.addEventListener('load', () => {
+    const savedCart = sessionStorage.getItem('cart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCart();
+    }
+});
+
+// Save cart to sessionStorage
+function saveCart() {
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Add item
 function addToCart(name, price) {
     let existing = cart.find(item => item.name === name);
     if (existing) {
@@ -9,9 +23,10 @@ function addToCart(name, price) {
         cart.push({ name, price, quantity: 1 });
     }
     updateCart();
+    saveCart();
 }
 
-// Update cart display
+// Update cart
 function updateCart() {
     const cartItems = document.getElementById("cartItems");
     const totalPrice = document.getElementById("totalPrice");
@@ -41,69 +56,58 @@ function changeQuantity(index, value) {
     if (qty < 1) qty = 1;
     cart[index].quantity = qty;
     updateCart();
+    saveCart();
 }
 
 // Remove item
 function removeItem(index) {
     cart.splice(index, 1);
     updateCart();
+    saveCart();
 }
 
-// Send Order button
+// Send order
 function sendOrder() {
     if(cart.length === 0) {
         alert("Cart is empty!");
         return;
     }
 
-    // Save cart data in hidden inputs
-    document.getElementById('foodNames').value = cart.map(item => item.name).join(',');
-    document.getElementById('quantities').value = cart.map(item => item.quantity).join(',');
-    document.getElementById('prices').value = cart.map(item => item.price).join(',');
-
     const orderForm = document.getElementById('orderForm');
+    const isLoggedIn = orderForm.dataset.loggedin === "1";
 
-    // Check if customer is logged in via session
-    const isLoggedIn = document.getElementById('orderForm').dataset.loggedin === "1";
+    document.getElementById('foodNames').value = cart.map(i => i.name).join(',');
+    document.getElementById('quantities').value = cart.map(i => i.quantity).join(',');
+    document.getElementById('prices').value = cart.map(i => i.price).join(',');
 
-    if (!isLoggedIn) {
-        // Redirect to login page if not logged in
-        orderForm.action = "login.php";
+    if(!isLoggedIn) {
+        sessionStorage.setItem('cart', JSON.stringify(cart));
+        orderForm.action = "login.php?redirect=menu.php&order=1";
         orderForm.submit();
-    } else {
-        // Already logged in → save order directly via sendOrder.php
-        orderForm.action = "sendOrder.php";
-        orderForm.submit();
-
-        // Show success message
-        alert("✅ Order sent successfully!");
-
-        // Clear cart after sending
-        cart = [];
-        updateCart();
+        return;
     }
+
+    orderForm.action = "sendOrder.php";
+    orderForm.submit();
+    alert("✅ Order sent successfully!");
+    cart = [];
+    updateCart();
+    sessionStorage.removeItem('cart');
 }
 
-// Pay button: redirect to order_slip.php
+// Pay button
 function payNow() {
     if(cart.length === 0) {
         alert("Add items before paying!");
         return;
     }
-
-    document.getElementById('foodNames').value = cart.map(item => item.name).join(',');
-    document.getElementById('quantities').value = cart.map(item => item.quantity).join(',');
-    document.getElementById('prices').value = cart.map(item => item.price).join(',');
+    document.getElementById('foodNames').value = cart.map(i => i.name).join(',');
+    document.getElementById('quantities').value = cart.map(i => i.quantity).join(',');
+    document.getElementById('prices').value = cart.map(i => i.price).join(',');
 
     const orderForm = document.getElementById('orderForm');
-    orderForm.action = "sendOrder.php"; 
+    orderForm.action = "sendOrder.php";
     orderForm.submit();
-
-    // Redirect to order slip after short delay
-    setTimeout(() => {
-        const tableNumber = document.querySelector('input[name="table"]').value;
-        window.location.href = "order_slip.php?table=" + tableNumber;
-    }, 200);
 }
 
 // Search filter

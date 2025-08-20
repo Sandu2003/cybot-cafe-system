@@ -1,49 +1,70 @@
 <?php
-session_start();
-include '../admin/db.php';
+include '../admin/db.php'; // DB connection
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // hash password
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    if (empty($name) || empty($email) || empty($password)) {
+        echo "All fields are required!";
+        exit;
+    }
 
     // Check if email already exists
-    $stmt = $conn->prepare("SELECT id FROM customers WHERE email=?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
-    if($stmt->num_rows > 0){
-        $error = "Email already registered!";
-    } else {
-        $stmt = $conn->prepare("INSERT INTO customers (name, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $name, $email, $password);
-        if($stmt->execute()){
-            $_SESSION['customer_id'] = $stmt->insert_id;
-            $_SESSION['customer_name'] = $name;
-            header("Location: menu.php"); // redirect after register
-            exit;
-        } else {
-            $error = "Registration failed!";
-        }
+    $check = $conn->prepare("SELECT * FROM customers WHERE email = ?");
+    $check->bind_param("s", $email);
+    $check->execute();
+    $checkResult = $check->get_result();
+
+    if ($checkResult->num_rows > 0) {
+        echo "Email already registered!";
+        exit;
     }
+
+    // Hash password for security
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert new user
+    $sql = "INSERT INTO customers (name, email, password) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $name, $email, $hashedPassword);
+
+    if ($stmt->execute()) {
+        echo "✅ Registration successful! <a href='login.php'>Login Here</a>";
+    } else {
+        echo "Error: " . $conn->error;
+    }
+
+    $stmt->close();
 }
+$conn->close();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Register - Cybot Cafe</title>
+  <meta charset="UTF-8">
+  <title>Register Page</title>
+  <link rel="stylesheet" href="register.css">
 </head>
 <body>
-<h2>Customer Registration</h2>
-<?php if(isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
-<form method="post">
-    <input type="text" name="name" placeholder="Full Name" required><br><br>
-    <input type="email" name="email" placeholder="Email" required><br><br>
-    <input type="password" name="password" placeholder="Password" required><br><br>
-    <button type="submit">Register</button>
-</form>
-<p>Already registered? <a href="login.php">Login here</a></p>
+  <!-- Navbar -->
+<nav>
+    <div class="navbar-logo">
+        <span>☕ Cybot Cafe</span>
+    </div>
+</nav>
+
+  <div class="register-container">
+    <h2>Create Account</h2>
+    <form method="POST" action="register.php">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email Address" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="login.php">Login</a></p>
+  </div>
 </body>
 </html>
