@@ -1,0 +1,218 @@
+/* ===== General Page Styling ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+/* ===== Header ===== */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3e2723;
+    color: white;
+    padding: 15px 25px;
+}
+
+header h1 {
+    font-size: 24px;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+header nav a:hover {
+    color: #ffcc80;
+}
+
+/* ===== Search and Category ===== */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.filters input,
+.filters select {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* ===== Main Layout ===== */
+main {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+
+.menu-section {
+    flex: 3;
+    background: url('../image/28131602-193900327-146866924168046-6636603416582076138-n_cover_1871x1247.jpg') no-repeat center center/cover;
+    padding: 20px;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.menu-image {
+    width: 150px;       
+    height: 150px;      
+    object-fit: cover;  
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+
+/* ===== Menu Items ===== */
+.food-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.food-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.food-item h3 {
+    margin: 10px 0 5px;
+    font-size: 18px;
+}
+
+.food-item p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.food-item button {
+    background-color: #6d4c41;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.food-item button:hover {
+    background-color: #4e342e;
+}
+
+/* ===== Cart Section ===== */
+.cart-section {
+    flex: 1;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.cart-section h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}
+
+#cartItems {
+    margin-bottom: 15px;
+}
+
+/* Cart item with quantity and remove button */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #ddd;
+    font-size: 14px;
+}
+
+.cart-item input[type="number"] {
+    width: 50px;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.cart-item button.remove-btn {
+    background-color: #e53935;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 12px;
+    transition: opacity 0.2s;
+}
+
+.cart-item button.remove-btn:hover {
+    opacity: 0.8;
+}
+
+.total {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.cart-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.cart-actions button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.cart-actions button.send {
+    background-color: #2e7d32;
+}
+
+.cart-actions button.send:hover {
+    background-color: #1b5e20;
+}
+
+.cart-actions button.pay {
+    background-color: #f57c00;
+}
+
+.cart-actions button.pay:hover {
+    background-color: #e65100;
+}
+

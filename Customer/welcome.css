@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: black;
+    background-image: url(../image/Welcome.jpg);
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .overlay {
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .welcome-box {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 50px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 500px;
+    height: 300px;
+    width: 80%;
+    opacity: 70%;
+    transform: scale(1);
+    transition: transform 0.5s ease; 
+  }
+  
+  .welcome-box:hover {
+    transform: scale(1.05); 
+  }
+
+  h1 {
+    margin-top: -10px;
+    color: black;
+    font-size: 45px;
+  }
+  h2 {
+    color: black;
+    font-size: 30px;
+    margin-top: -20px;
+  }
+
+  p {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: black;
+  }
+
+  button {
+    padding: 12px 30px;
+    font-size: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+  }
+
+  button:hover {
+    background: #0056b3;
+  }
