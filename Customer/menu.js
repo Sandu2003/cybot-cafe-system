@@ -20,7 +20,7 @@ function addToCart(name, price) {
     if (existing) {
         existing.quantity += 1;
     } else {
-        cart.push({ name, price, quantity: 1 });
+        cart.push({ name, price: parseFloat(price), quantity: 1 });
     }
     updateCart();
     saveCart();
@@ -30,6 +30,9 @@ function addToCart(name, price) {
 function updateCart() {
     const cartItems = document.getElementById("cartItems");
     const totalPrice = document.getElementById("totalPrice");
+
+    if (!cartItems || !totalPrice) return;
+
     cartItems.innerHTML = "";
     let total = 0;
 
@@ -37,23 +40,35 @@ function updateCart() {
         let itemTotal = item.price * item.quantity;
         total += itemTotal;
 
-        cartItems.innerHTML += `
-            <div class="cart-item">
-                <span>${item.name}</span>
-                <span>Rs.${itemTotal}</span>
-                <input type="number" min="1" value="${item.quantity}" onchange="changeQuantity(${index}, this.value)">
-                <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
-            </div>
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+            <span>${item.name}</span>
+            <span>Rs.${itemTotal.toFixed(2)}</span>
+            <input type="number" min="1" value="${item.quantity}">
+            <button class="remove-btn">Remove</button>
         `;
+
+        // Event for quantity change
+        div.querySelector("input").addEventListener("change", (e) => {
+            changeQuantity(index, e.target.value);
+        });
+
+        // Event for remove
+        div.querySelector(".remove-btn").addEventListener("click", () => {
+            removeItem(index);
+        });
+
+        cartItems.appendChild(div);
     });
 
-    totalPrice.textContent = total;
+    totalPrice.textContent = "Rs." + total.toFixed(2);
 }
 
 // Change quantity
 function changeQuantity(index, value) {
     let qty = parseInt(value);
-    if (qty < 1) qty = 1;
+    if (isNaN(qty) || qty < 1) qty = 1;
     cart[index].quantity = qty;
     updateCart();
     saveCart();
@@ -68,19 +83,21 @@ function removeItem(index) {
 
 // Send order
 function sendOrder() {
-    if(cart.length === 0) {
+    if (cart.length === 0) {
         alert("Cart is empty!");
         return;
     }
 
     const orderForm = document.getElementById('orderForm');
+    if (!orderForm) return;
+
     const isLoggedIn = orderForm.dataset.loggedin === "1";
 
     document.getElementById('foodNames').value = cart.map(i => i.name).join(',');
     document.getElementById('quantities').value = cart.map(i => i.quantity).join(',');
     document.getElementById('prices').value = cart.map(i => i.price).join(',');
 
-    if(!isLoggedIn) {
+    if (!isLoggedIn) {
         sessionStorage.setItem('cart', JSON.stringify(cart));
         orderForm.action = "login.php?redirect=menu.php&order=1";
         orderForm.submit();
@@ -89,7 +106,8 @@ function sendOrder() {
 
     orderForm.action = "sendOrder.php";
     orderForm.submit();
-    alert("✅ Order sent successfully!");
+
+    // clear cart after order
     cart = [];
     updateCart();
     sessionStorage.removeItem('cart');
@@ -97,32 +115,42 @@ function sendOrder() {
 
 // Pay button
 function payNow() {
-    if(cart.length === 0) {
+    if (cart.length === 0) {
         alert("Add items before paying!");
         return;
     }
+
     document.getElementById('foodNames').value = cart.map(i => i.name).join(',');
     document.getElementById('quantities').value = cart.map(i => i.quantity).join(',');
     document.getElementById('prices').value = cart.map(i => i.price).join(',');
 
     const orderForm = document.getElementById('orderForm');
-    orderForm.action = "sendOrder.php";
-    orderForm.submit();
+    if (orderForm) {
+        orderForm.action = "sendOrder.php";
+        orderForm.submit();
+    }
 }
 
-// Search filter
-document.getElementById("searchBar").addEventListener("input", function() {
-    const searchText = this.value.toLowerCase();
-    document.querySelectorAll(".food-item").forEach(item => {
-        const name = item.dataset.name.toLowerCase();
-        item.style.display = name.includes(searchText) ? "block" : "none";
+// Search filter (check element exists)
+const searchBar = document.getElementById("searchBar");
+if (searchBar) {
+    searchBar.addEventListener("input", function () {
+        const searchText = this.value.toLowerCase();
+        document.querySelectorAll(".food-item").forEach(item => {
+            const name = item.dataset.name.toLowerCase();
+            item.style.display = name.includes(searchText) ? "block" : "none";
+        });
     });
-});
+}
 
-// Category filter
-document.getElementById("categoryFilter").addEventListener("change", function() {
-    const category = this.value;
-    document.querySelectorAll(".food-item").forEach(item => {
-        item.style.display = (category === "all" || item.dataset.category === category) ? "block" : "none";
+// Category filter (check element exists)
+const categoryFilter = document.getElementById("categoryFilter");
+if (categoryFilter) {
+    categoryFilter.addEventListener("change", function () {
+        const category = this.value;
+        document.querySelectorAll(".food-item").forEach(item => {
+            item.style.display =
+                (category === "all" || item.dataset.category === category) ? "block" : "none";
+        });
     });
-});
+}

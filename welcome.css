@@ -2,7 +2,7 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background: black;
-    background-image: url(../image/Welcome.jpg);
+    background-image: url(image/Welcome.jpg);
     background-size: cover;
     background-position: center;
     height: 100vh;

@@ -9,11 +9,14 @@ $_SESSION['selectedTable'] = $tableNumber;
 // Fetch menu items
 $menu_items = [];
 if ($conn) {
-    $result = $conn->query("SELECT * FROM menu_items ORDER BY id ASC");
-    if ($result) {
+    $stmt = $conn->prepare("SELECT id, name, category, price, image FROM menu_items ORDER BY id ASC");
+    if ($stmt) {
+        $stmt->execute();
+        $result = $stmt->get_result();
         while ($row = $result->fetch_assoc()) {
             $menu_items[] = $row;
         }
+        $stmt->close();
     }
     $conn->close();
 } else {
@@ -26,7 +29,7 @@ $orderMessage = $_SESSION['order_message'] ?? '';
 unset($_SESSION['login_message'], $_SESSION['order_message']);
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Cybot Cafe Menu</title>
@@ -38,18 +41,18 @@ unset($_SESSION['login_message'], $_SESSION['order_message']);
 <header>
     <h1>☕ Cybot Cafe</h1>
     <nav>
-        <a href="welcome.html">Home</a>
+        <a href="../index.html">Home</a>
         <a href="menu.php">Menu</a>
         <a href="#">Contact</a>
     </nav>
 </header>
 
 <?php if($loginMessage): ?>
-    <p style="text-align:center; color:green; margin:10px 0;"><?= $loginMessage ?></p>
+    <p style="text-align:center; color:green; margin:10px 0;"><?= htmlspecialchars($loginMessage) ?></p>
 <?php endif; ?>
 
 <?php if($orderMessage): ?>
-    <p style="text-align:center; color:green; margin:10px 0;"><?= $orderMessage ?></p>
+    <p style="text-align:center; color:green; margin:10px 0;"><?= htmlspecialchars($orderMessage) ?></p>
 <?php endif; ?>
 
 <section class="filters">
@@ -66,13 +69,22 @@ unset($_SESSION['login_message'], $_SESSION['order_message']);
 <main>
     <div class="menu-section" id="menuList">
         <?php foreach($menu_items as $item): ?>
-            <div class="food-item" data-name="<?= htmlspecialchars($item['name']) ?>" data-category="<?= htmlspecialchars($item['category']) ?>" data-price="<?= $item['price'] ?>">
-                <?php if($item['image']): ?>
-                    <img src="../admin/uploads/<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="menu-image">
+            <div class="food-item" 
+                 data-name="<?= htmlspecialchars($item['name']) ?>" 
+                 data-category="<?= htmlspecialchars($item['category']) ?>" 
+                 data-price="<?= htmlspecialchars($item['price']) ?>">
+                 
+                <?php if(!empty($item['image'])): ?>
+                    <img src="../admin/uploads/<?= htmlspecialchars($item['image']) ?>" 
+                         alt="<?= htmlspecialchars($item['name']) ?>" class="menu-image">
                 <?php endif; ?>
+                
                 <h3><?= htmlspecialchars($item['name']) ?></h3>
-                <p>Rs.<?= $item['price'] ?></p>
-                <button type="button" onclick="addToCart('<?= htmlspecialchars($item['name']) ?>', <?= $item['price'] ?>)">Add to Cart</button>
+                <p>Rs.<?= number_format($item['price'], 2) ?></p>
+                <button type="button" 
+                        onclick="addToCart('<?= htmlspecialchars($item['name'], ENT_QUOTES) ?>', <?= $item['price'] ?>)">
+                    Add to Cart
+                </button>
             </div>
         <?php endforeach; ?>
     </div>
@@ -90,7 +102,7 @@ unset($_SESSION['login_message'], $_SESSION['order_message']);
             <input type="hidden" name="price" id="prices">
 
             <div id="cartItems"></div>
-            <p class="total">Total: Rs.<span id="totalPrice">0</span></p>
+            <p class="total">Total: Rs.<span id="totalPrice">0.00</span></p>
 
             <div class="cart-actions">
                 <button type="button" class="send" onclick="sendOrder()">Send Order</button>
