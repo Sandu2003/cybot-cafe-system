@@ -215,4 +215,66 @@ main {
 .cart-actions button.pay:hover {
     background-color: #e65100;
 }
+/* ===== Contact Kitchen Section ===== */
+.contact-kitchen {
+    background-color: #fff3e0; /* soft cream color */
+    padding: 25px 20px;
+    border-radius: 12px;
+    margin: 30px auto;
+    max-width: 600px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.contact-kitchen:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.contact-kitchen h2 {
+    color: #ef6c00; /* matches orange accents */
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.contact-kitchen p {
+    color: #6d4c41; /* dark brown text */
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.contact-kitchen textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.contact-kitchen textarea:focus {
+    outline: none;
+    border-color: #ef6c00;
+    box-shadow: 0 0 5px rgba(239,108,0,0.4);
+}
+
+.contact-kitchen button {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background-color: #ef6c00; /* orange button */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.contact-kitchen button:hover {
+    background-color: #ff9800;
+    transform: scale(1.05);
+}

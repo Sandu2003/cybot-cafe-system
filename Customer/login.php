@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../admin/db.php';
+include 'db.php';
 
 // Sanitize redirect to prevent header injection
 $redirect = isset($_GET['redirect']) ? basename($_GET['redirect']) : 'menu.php';

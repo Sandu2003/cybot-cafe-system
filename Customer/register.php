@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../admin/db.php'; // DB connection
+include 'db.php'; // DB connection
 
 $message = '';
 
